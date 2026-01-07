@@ -170,15 +170,27 @@ class Calculator:
 
 def on_load(server: PluginServerInterface, prev_module):
     server.logger.info('loaded MLC Calculator plugin')
+    server.register_help_message('!!calc', '查看计算器帮助')
     builder = SimpleCommandBuilder()
+    builder.command('!!calc', say_help_msg)
     builder.command('!!calc <expression>', calc_expression)
     builder.arg('expression', GreedyText)
     builder.register(server)
+
+HELP_MSG = '''§7!!calc <expression> §f计算表达式
+§7支持运算符：+ - * / % ^
+§7支持计量单位: K-P
+§7支持格雷电压: ULV-MAX
+§7支持数学函数: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, log, exp, sqrt, abs, ceil, floor, round, radians, degrees
+§7表达式允许含有空格、括号'''
+
+def say_help_msg(src, ctx):
+    return src.reply(HELP_MSG)
 
 def calc_expression(src, ctx):
     expression = ctx['expression']
     calculator = Calculator()
     try:
-        src.get_server().say(f'§7{expression}=§6{calculator.solve(expression)}')
+        src.get_server().say(f'§7{expression}=§e{calculator.solve(expression)}')
     except ValueError as e:
         src.get_server().say(f'§7{expression}表达式错误: §c{e}')
