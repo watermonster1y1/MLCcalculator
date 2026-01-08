@@ -139,8 +139,12 @@ class Calculator:
                     raise ValueError(f'未知的函数或单位: {function_name}')
                 continue
             elif char in self.operator:
-                while (operator_stack and
-                    self.get_priority(char) < self.get_priority(operator_stack[-1])
+                while (operator_stack and (
+                        self.get_priority(char) < self.get_priority(operator_stack[-1]) or (
+                            self.get_priority(char) == self.get_priority(operator_stack[-1]) and
+                            char != '^'
+                        )
+                    )
                 ):
                     number_stack, operator_stack = self.calculate(number_stack, operator_stack)
                 operator_stack.append(char)
