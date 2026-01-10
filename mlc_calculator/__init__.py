@@ -170,7 +170,7 @@ class Calculator:
         return formatted
 
     def solve(self, expression: str) -> str:
-        result = self.expression_parse(expression)
+        result = self.expression_parse(expression.replace(" ",""))
         if math.isinf(result):
             return "Inf" if result > 0 else "-Inf"
         elif math.isnan(result):
