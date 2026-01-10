@@ -127,10 +127,9 @@ class Calculator:
                 number_stack.append(float(number))
                 continue
             elif char.isalpha():
-                char = char.lower()
                 function_name = ""
                 while i < length and expr[i].isalpha():
-                    function_name += expr[i]
+                    function_name += expr[i].lower()
                     i += 1
                 if function_name in self.functions:
                     operator_stack.append(function_name)
