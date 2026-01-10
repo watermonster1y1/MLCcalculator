@@ -34,26 +34,26 @@ class Calculator:
             '^': 3,
         }
         self.unit = {
-            'K': 1000,
-            'M': 1000000,
-            'G': 1000000000,
-            'T': 1000000000000,
-            'P': 1000000000000000,
-            'ULV': 8,
-            'LV': 32,
-            'MV': 128,
-            'HV': 512,
-            'EV': 2048,
-            'IV': 8192,
-            'LuV': 32768,
-            'ZPM': 131072,
-            'UV': 524288,
-            'UHV': 2097152,
-            'UEV': 8388608,
-            'UIV': 33554432,
-            'UXV': 134217728,
-            'OPV': 536870912,
-            'MAX': 2147483648,
+            'k': 1000,
+            'm': 1000000,
+            'g': 1000000000,
+            't': 1000000000000,
+            'p': 1000000000000000,
+            'ulv': 8,
+            'lv': 32,
+            'mv': 128,
+            'hv': 512,
+            'ev': 2048,
+            'iv': 8192,
+            'luv': 32768,
+            'zpm': 131072,
+            'uv': 524288,
+            'uhv': 2097152,
+            'uev': 8388608,
+            'uiv': 33554432,
+            'uxv': 134217728,
+            'opv': 536870912,
+            'max': 2147483648,
         }
 
     def get_priority(self, op: str) -> int:
@@ -127,6 +127,7 @@ class Calculator:
                 number_stack.append(float(number))
                 continue
             elif char.isalpha():
+                char = char.lower()
                 function_name = ""
                 while i < length and expr[i].isalpha():
                     function_name += expr[i]
@@ -148,12 +149,17 @@ class Calculator:
                 ):
                     number_stack, operator_stack = self.calculate(number_stack, operator_stack)
                 operator_stack.append(char)
+            else:
+                raise ValueError(f'非法字符: {char}')
             i = i + 1
         while operator_stack:
             if operator_stack[-1] == '(':
                 raise ValueError('括号不匹配')
             number_stack, operator_stack = self.calculate(number_stack, operator_stack)
-        return float(number_stack[0])
+        result = float(number_stack.pop())
+        if number_stack:
+            raise ValueError('数字多余')
+        return result
 
     def format_result(self, value: float) -> str:
         if value == 0:
@@ -186,7 +192,8 @@ HELP_MSG = '''§7!!calc <expression> §f计算表达式
 §7支持计量单位: K-P
 §7支持格雷电压: ULV-MAX
 §7支持数学函数: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, log, exp, sqrt, abs, ceil, floor, round, radians, degrees
-§7表达式允许含有空格、括号'''
+§7表达式允许含有空格、括号
+§7表达式对字母大小写不敏感'''
 
 def say_help_msg(src, ctx):
     return src.reply(HELP_MSG)
