@@ -94,12 +94,17 @@ class Calculator:
                 number_stack.append(a % b)
             elif op == '^':
                 number_stack.append(a ** b)
+        elif op == '(':
+            operator_stack.append(op)
         elif op in self.unit:
             num = number_stack.pop()
             num = num * self.unit[op]
             number_stack.append(num)
-        elif op == '(':
-            operator_stack.append(op)
+        elif 'max' in op:
+            num = number_stack.pop()
+            add = ord(op[3]) - ord('a') + 1
+            num = num * self.unit['max'] * (4 ** add)
+            number_stack.append(num)
         else:
             raise ValueError(f'无效的运算: {op}')
         return number_stack, operator_stack
@@ -133,7 +138,7 @@ class Calculator:
                     i += 1
                 if function_name in self.functions:
                     operator_stack.append(function_name)
-                elif function_name in self.unit:
+                elif function_name in self.unit or 'max' in function_name:
                     operator_stack.append(function_name)
                 else:
                     raise ValueError(f'未知的函数或单位: {function_name}')
@@ -189,7 +194,8 @@ def on_load(server: PluginServerInterface, prev_module):
 HELP_MSG = '''§7!!calc <expression> §f计算表达式
 §7支持运算符：+ - * / % ^
 §7支持计量单位: K-P
-§7支持格雷电压: ULV-MAX
+§7支持格雷电压: ULV-MAX+26
+§7MAX+n以MAX后接字母表示，如MAXA表示MAX+1
 §7支持数学函数: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, log, exp, sqrt, abs, ceil, floor, round, radians, degrees
 §7表达式允许含有空格、括号
 §7表达式对字母大小写不敏感'''
